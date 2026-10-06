@@ -95,3 +95,9 @@ Eingang (Drag&Drop / "Öffnen mit")
 | 18 | Eingang | Drag & Drop, »Öffnen mit«, Dock |
 | 19 | Bilder | ja, inkl. HEIC (iPhone) |
 | 20 | Durchsuchbar machen | ja |
+
+## 5. Stand
+
+- Umsetzung abgeschlossen (Branch `claude/pdfilter-macos-planning-9l23s8`).
+- GitHub Actions: Build, 35 Tests (Parsing, Core, OCR, Verarbeitung Ende-zu-Ende) grün; `PDFilter.app` als Artefakt.
+- Noch nicht live geprüft: die Oberfläche selbst (ein CI-Runner kann keine Fenster bedienen). Erster Start auf dem Mac bitte mit einer Test-Akte.
