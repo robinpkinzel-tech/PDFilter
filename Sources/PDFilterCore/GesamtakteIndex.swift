@@ -17,7 +17,11 @@ public enum GesamtakteOutline {
         "\(date?.german ?? noDateLabel) – \(name)"
     }
 
-    private static let titleRegex = NSRegularExpression(#"^\s*(\d{1,2})\.(\d{1,2})\.(\d{4})\b"#)
+    /// Datum aus einem Lesezeichen-Titel (»01.12.2024 – Name«).
+    static func date(fromTitle label: String) -> DayDate? {
+        let head = label.split(separator: "–", maxSplits: 1).first.map(String.init) ?? label
+        return DayDate.parse(head.trimmingCharacters(in: .whitespaces))
+    }
 
     public static func entries(of document: PDFDocument) -> [OutlineEntry] {
         guard let root = document.outlineRoot else { return [] }
@@ -29,11 +33,7 @@ public enum GesamtakteOutline {
                     let idx = document.index(for: page)
                     if idx >= 0 {
                         let label = child.label ?? ""
-                        var date: DayDate?
-                        if let m = titleRegex.first(in: label), let d = m.int(1), let mo = m.int(2), let y = m.int(3) {
-                            date = DayDate(year: y, month: mo, day: d)
-                        }
-                        result.append(OutlineEntry(pageIndex: idx, title: label, date: date))
+                        result.append(OutlineEntry(pageIndex: idx, title: label, date: date(fromTitle: label)))
                     }
                 }
                 walk(child)
