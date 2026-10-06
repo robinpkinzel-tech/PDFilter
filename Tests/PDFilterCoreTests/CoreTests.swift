@@ -18,7 +18,7 @@ final class CoreTests: XCTestCase {
     func testAkteLocatorAndTarget() throws {
         let root = makeTempDir()
         let fm = FileManager.default
-        try fm.createDirectory(at: root.appendingPathComponent("34:26 - Kinzel ./. Robin/01_Akte/01_Gesamtakte"), withIntermediateDirectories: true)
+        try fm.createDirectory(at: root.appendingPathComponent("34:26 - Kinzel .:. Robin/01_Akte/01_Gesamtakte"), withIntermediateDirectories: true)
         try fm.createDirectory(at: root.appendingPathComponent("35:26 - Müller ./. Meier/01_Akte"), withIntermediateDirectories: true)
         try fm.createDirectory(at: root.appendingPathComponent("Archiv/12:20 - Alt/01_Akte/01_Gesamtakte"), withIntermediateDirectories: true)
         var settings = PDFilterSettings(rootFolderPath: root.path)
@@ -26,7 +26,7 @@ final class CoreTests: XCTestCase {
         let az = Aktenzeichen(number: 34, year: 26)!
         let found = try locator.findAkteFolders(for: az)
         XCTAssertEqual(found.count, 1)
-        XCTAssertEqual(found.first?.lastPathComponent, "34:26 - Kinzel ./. Robin")
+        XCTAssertEqual(found.first?.lastPathComponent, "34:26 - Kinzel .:. Robin")
         let target = try locator.targetFolder(in: found[0])
         XCTAssertEqual(target.lastPathComponent, "01_Gesamtakte")
 
@@ -56,7 +56,11 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(TargetFolderAnalyzer.analyze(folder: folder, settings: settings, az: az), .empty)
 
         TestPDF.make(pages: [["Seite 1"]], at: folder.appendingPathComponent("Akte.pdf"))
-        XCTAssertEqual(TargetFolderAnalyzer.analyze(folder: folder, settings: settings, az: az), .gesamtakte(folder.appendingPathComponent("Akte.pdf")))
+        if case .gesamtakte(let g) = TargetFolderAnalyzer.analyze(folder: folder, settings: settings, az: az) {
+            XCTAssertEqual(g.lastPathComponent, "Akte.pdf")
+        } else {
+            XCTFail("Erwartet: Gesamtakte")
+        }
 
         TestPDF.make(pages: [["Seite 1"]], at: folder.appendingPathComponent("02_Antrag.pdf"))
         if case .gesamtakteWithSingles(let g, let singles) = TargetFolderAnalyzer.analyze(folder: folder, settings: settings, az: az) {
@@ -95,7 +99,7 @@ final class CoreTests: XCTestCase {
         let url = dir.appendingPathComponent("Gesamtakte.pdf")
         try SafeFileWriter.write(merged, to: url)
 
-        let reloaded = PDFDocument(url: url)!
+        let reloaded = try XCTUnwrap(PDFDocument(url: url))
         let entries = GesamtakteOutline.entries(of: reloaded)
         XCTAssertEqual(entries.map(\.pageIndex), [0, 2])
         XCTAssertEqual(entries.map { $0.date?.iso }, ["2024-11-01", "2024-12-01"])
@@ -113,7 +117,7 @@ final class CoreTests: XCTestCase {
         PDFAssembler.insert(c, into: reloaded, at: decision.pageIndex, outlineTitle: GesamtakteOutline.title(date: newDate, name: "Mitte"))
         XCTAssertEqual(reloaded.pageCount, 5)
         try SafeFileWriter.write(reloaded, to: url, expectedPageCount: 5)
-        let again = PDFDocument(url: url)!
+        let again = try XCTUnwrap(PDFDocument(url: url))
         XCTAssertEqual(again.pageCount, 5)
         XCTAssertEqual(again.page(at: 2)?.string?.contains("C1"), true)
         XCTAssertEqual(again.page(at: 4)?.string?.contains("B1"), true)

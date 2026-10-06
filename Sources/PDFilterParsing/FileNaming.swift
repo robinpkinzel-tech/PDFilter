@@ -19,7 +19,7 @@ public enum FileNaming {
     /// Führende Ordnungsnummer (»01_Anschreiben« → 1). Ein führendes Datum zählt nicht als Nummer.
     public static func leadingNumber(_ base: String) -> Int? {
         let s = stripAktenzeichenPrefix(base)
-        if let d = FileNameDateParser.firstDate(inFileName: s), d.location == 0 { return nil }
+        if let d = FileNameDateParser.allDates(in: s, referenceYear: AktenzeichenFinder.referenceYear).first, d.location == 0 { return nil }
         guard let m = numberPrefixRegex.first(in: s), let n = m.int(1) else { return nil }
         return n
     }
@@ -27,7 +27,7 @@ public enum FileNaming {
     /// Entfernt eine führende Ordnungsnummer.
     public static func stripLeadingNumber(_ base: String) -> String {
         let s = stripAktenzeichenPrefix(base)
-        if let d = FileNameDateParser.firstDate(inFileName: s), d.location == 0 { return s }
+        if let d = FileNameDateParser.allDates(in: s, referenceYear: AktenzeichenFinder.referenceYear).first, d.location == 0 { return s }
         guard let m = numberPrefixRegex.first(in: s) else { return s }
         return s.utf16Substring(from: m.end, to: s.utf16Length)
     }
@@ -42,7 +42,8 @@ public enum FileNaming {
 
     /// Macht einen Text als Dateinamen verwendbar.
     public static func sanitize(_ s: String) -> String {
-        var t = s.replacingOccurrences(of: "/", with: "-").replacingOccurrences(of: ":", with: "-")
+        // »/« ist in Dateinamen unzulässig; der Finder zeigt ein gespeichertes »:« als »/« an.
+        var t = s.replacingOccurrences(of: "/", with: ":")
         t = t.replacingOccurrences(of: "\0", with: "")
         t = t.trimmingCharacters(in: .whitespacesAndNewlines)
         return t.isEmpty ? "Dokument" : t

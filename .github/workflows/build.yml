@@ -26,7 +26,7 @@ jobs:
         run: swift build -v 2>&1 | tail -n 200
 
       - name: Tests
-        run: swift test 2>&1 | tail -n 400
+        run: swift test 2>&1 | tail -n 800
 
       - name: App-Bundle erzeugen (Release)
         run: Scripts/make-app.sh
