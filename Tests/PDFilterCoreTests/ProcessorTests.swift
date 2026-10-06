@@ -8,14 +8,14 @@ final class ProcessorTests: XCTestCase {
     var root: URL!
     var inbox: URL!
     var target: URL!
-    var settings: Settings!
+    var settings: PDFilterSettings!
 
     override func setUpWithError() throws {
         root = makeTempDir("Root")
         inbox = makeTempDir("Inbox")
         target = root.appendingPathComponent("34:26 - Kinzel ./. Robin/01_Akte/01_Gesamtakte", isDirectory: true)
         try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
-        settings = Settings(rootFolderPath: root.path, moveOriginalsToTrash: false, makeSearchable: false)
+        settings = PDFilterSettings(rootFolderPath: root.path, moveOriginalsToTrash: false, makeSearchable: false)
     }
 
     func makeProcessor(_ interaction: ScriptedInteraction) -> Processor {

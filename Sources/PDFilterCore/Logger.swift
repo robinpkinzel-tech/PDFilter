@@ -9,7 +9,7 @@ public final class PDFilterLogger: @unchecked Sendable {
     private var handlers: [(String) -> Void] = []
     private let formatter: DateFormatter
 
-    public init(fileURL: URL = Settings.appSupportDirectory.appendingPathComponent("protokoll.log")) {
+    public init(fileURL: URL = PDFilterSettings.appSupportDirectory.appendingPathComponent("protokoll.log")) {
         self.fileURL = fileURL
         formatter = DateFormatter()
         formatter.locale = Locale(identifier: "de_DE")

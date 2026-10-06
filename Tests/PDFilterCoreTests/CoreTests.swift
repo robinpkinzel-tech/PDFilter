@@ -21,7 +21,7 @@ final class CoreTests: XCTestCase {
         try fm.createDirectory(at: root.appendingPathComponent("34:26 - Kinzel ./. Robin/01_Akte/01_Gesamtakte"), withIntermediateDirectories: true)
         try fm.createDirectory(at: root.appendingPathComponent("35:26 - Müller ./. Meier/01_Akte"), withIntermediateDirectories: true)
         try fm.createDirectory(at: root.appendingPathComponent("Archiv/12:20 - Alt/01_Akte/01_Gesamtakte"), withIntermediateDirectories: true)
-        var settings = Settings(rootFolderPath: root.path)
+        var settings = PDFilterSettings(rootFolderPath: root.path)
         let locator = AkteLocator(settings: settings)
         let az = Aktenzeichen(number: 34, year: 26)!
         let found = try locator.findAkteFolders(for: az)
@@ -46,12 +46,12 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(try AkteLocator(settings: settings).findAkteFolders(for: az12).count, 1)
 
         XCTAssertTrue(locator.knownAktenzeichen().contains(az))
-        XCTAssertThrowsError(try AkteLocator(settings: Settings(rootFolderPath: root.appendingPathComponent("gibtsnicht").path)).candidateFolders())
+        XCTAssertThrowsError(try AkteLocator(settings: PDFilterSettings(rootFolderPath: root.appendingPathComponent("gibtsnicht").path)).candidateFolders())
     }
 
     func testTargetAnalyzer() throws {
         let folder = makeTempDir()
-        let settings = Settings()
+        let settings = PDFilterSettings()
         let az = Aktenzeichen(number: 34, year: 26)!
         XCTAssertEqual(TargetFolderAnalyzer.analyze(folder: folder, settings: settings, az: az), .empty)
 
@@ -143,12 +143,12 @@ final class CoreTests: XCTestCase {
 
     func testSettingsRoundtrip() throws {
         let dir = makeTempDir()
-        var s = Settings()
+        var s = PDFilterSettings()
         s.pathTemplate = "01_Akte/01_Gesamtakte"
         s.noConfirmAkten = ["34/26"]
         s.backupCount = 3
         try s.save(to: dir.appendingPathComponent("settings.json"))
-        let loaded = Settings.load(from: dir.appendingPathComponent("settings.json"))
+        let loaded = PDFilterSettings.load(from: dir.appendingPathComponent("settings.json"))
         XCTAssertEqual(loaded, s)
         XCTAssertEqual(loaded.templateComponents, ["01_Akte", "01_Gesamtakte"])
         XCTAssertEqual(loaded.gesamtakteName(for: Aktenzeichen(number: 34, year: 26)!), "Gesamtakte.pdf")
@@ -158,7 +158,7 @@ final class CoreTests: XCTestCase {
         // Alte Datei ohne neue Schlüssel
         let partial = #"{"pathTemplate":"Akte"}"#.data(using: .utf8)!
         try partial.write(to: dir.appendingPathComponent("alt.json"))
-        let p = Settings.load(from: dir.appendingPathComponent("alt.json"))
+        let p = PDFilterSettings.load(from: dir.appendingPathComponent("alt.json"))
         XCTAssertEqual(p.pathTemplate, "Akte")
         XCTAssertEqual(p.backupCount, 5)
     }

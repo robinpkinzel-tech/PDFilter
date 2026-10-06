@@ -2,7 +2,7 @@ import Foundation
 import PDFilterParsing
 
 /// Einstellungen der App. Werden als JSON unter ~/Library/Application Support/PDFilter/settings.json gespeichert.
-public struct Settings: Codable, Equatable, Sendable {
+public struct PDFilterSettings: Codable, Equatable, Sendable {
     /// Wurzelordner, in dem die Aktenordner liegen (Standard: Schreibtisch).
     public var rootFolderPath: String
     /// Auch Unterordner des Wurzelordners (eine Ebene) nach Akten durchsuchen.
@@ -30,7 +30,7 @@ public struct Settings: Codable, Equatable, Sendable {
     public var einzeldokumenteFolderName: String
     public var draftFolderName: String
 
-    public init(rootFolderPath: String = Settings.defaultRootFolder.path,
+    public init(rootFolderPath: String = PDFilterSettings.defaultRootFolder.path,
                 searchSubfolders: Bool = false,
                 pathTemplate: String = "01_Akte/01_Gesamtakte",
                 gesamtakteFileName: String = "Gesamtakte.pdf",
@@ -60,7 +60,7 @@ public struct Settings: Codable, Equatable, Sendable {
         self.draftFolderName = draftFolderName
     }
 
-    public static let `default` = Settings()
+    public static let `default` = PDFilterSettings()
 
     public static var defaultRootFolder: URL {
         FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first
@@ -102,12 +102,12 @@ public struct Settings: Codable, Equatable, Sendable {
 
     public static var storageURL: URL { appSupportDirectory.appendingPathComponent("settings.json") }
 
-    public static func load(from url: URL = storageURL) -> Settings {
+    public static func load(from url: URL = storageURL) -> PDFilterSettings {
         guard let data = try? Data(contentsOf: url) else { return .default }
-        return (try? JSONDecoder().decode(Settings.self, from: data)) ?? .default
+        return (try? JSONDecoder().decode(PDFilterSettings.self, from: data)) ?? .default
     }
 
-    public func save(to url: URL = Settings.storageURL) throws {
+    public func save(to url: URL = PDFilterSettings.storageURL) throws {
         try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -117,7 +117,7 @@ public struct Settings: Codable, Equatable, Sendable {
     // Vorwärtskompatibles Decodieren: fehlende Schlüssel erhalten Standardwerte.
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        let d = Settings.default
+        let d = PDFilterSettings.default
         rootFolderPath = try c.decodeIfPresent(String.self, forKey: .rootFolderPath) ?? d.rootFolderPath
         searchSubfolders = try c.decodeIfPresent(Bool.self, forKey: .searchSubfolders) ?? d.searchSubfolders
         pathTemplate = try c.decodeIfPresent(String.self, forKey: .pathTemplate) ?? d.pathTemplate

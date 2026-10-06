@@ -3,9 +3,9 @@ import PDFilterParsing
 
 /// Findet Aktenordner und Zielordner anhand der Einstellungen.
 public struct AkteLocator {
-    public let settings: Settings
+    public let settings: PDFilterSettings
 
-    public init(settings: Settings) {
+    public init(settings: PDFilterSettings) {
         self.settings = settings
     }
 
@@ -99,7 +99,7 @@ public enum TargetFolderAnalyzer {
     }
 
     /// Erkennt eine Gesamtakte am Namen: konfigurierter Name, »gesamt…« oder schlicht »Akte«.
-    public static func looksLikeGesamtakte(_ url: URL, settings: Settings, az: Aktenzeichen) -> Bool {
+    public static func looksLikeGesamtakte(_ url: URL, settings: PDFilterSettings, az: Aktenzeichen) -> Bool {
         let name = url.lastPathComponent
         let configured = settings.gesamtakteName(for: az)
         if name.compare(configured, options: [.caseInsensitive, .diacriticInsensitive]) == .orderedSame { return true }
@@ -110,7 +110,7 @@ public enum TargetFolderAnalyzer {
         return false
     }
 
-    public static func analyze(folder: URL, settings: Settings, az: Aktenzeichen) -> TargetState {
+    public static func analyze(folder: URL, settings: PDFilterSettings, az: Aktenzeichen) -> TargetState {
         let files = pdfFiles(in: folder)
         if files.isEmpty { return .empty }
         if files.count == 1 { return .gesamtakte(files[0]) }

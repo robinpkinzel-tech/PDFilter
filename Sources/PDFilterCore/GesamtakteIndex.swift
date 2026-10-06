@@ -78,7 +78,7 @@ public final class PageDateCache: @unchecked Sendable {
     private var entries: [String: Entry] = [:]
     private let lock = NSLock()
 
-    public init(fileURL: URL = Settings.appSupportDirectory.appendingPathComponent("seitendaten-cache.json")) {
+    public init(fileURL: URL = PDFilterSettings.appSupportDirectory.appendingPathComponent("seitendaten-cache.json")) {
         self.fileURL = fileURL
         if let data = try? Data(contentsOf: fileURL),
            let decoded = try? JSONDecoder().decode([String: Entry].self, from: data) {

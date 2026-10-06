@@ -72,7 +72,7 @@ public enum SafeFileWriter {
 public struct BackupManager {
     public let root: URL
 
-    public init(root: URL = Settings.appSupportDirectory.appendingPathComponent("Sicherungen", isDirectory: true)) {
+    public init(root: URL = PDFilterSettings.appSupportDirectory.appendingPathComponent("Sicherungen", isDirectory: true)) {
         self.root = root
     }
 

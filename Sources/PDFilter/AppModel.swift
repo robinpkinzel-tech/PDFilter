@@ -42,7 +42,7 @@ struct QueueItem: Identifiable, Equatable {
 final class AppModel: ObservableObject, UserInteraction {
     static let shared = AppModel()
 
-    @Published var settings: Settings {
+    @Published var settings: PDFilterSettings {
         didSet { if settings != oldValue { try? settings.save() } }
     }
     @Published var queue: [QueueItem] = []
@@ -53,7 +53,7 @@ final class AppModel: ObservableObject, UserInteraction {
     @Published var showLog = false
 
     init() {
-        settings = Settings.load()
+        settings = PDFilterSettings.load()
         logLines = PDFilterLogger.shared.recentLines(max: 200)
         PDFilterLogger.shared.addHandler { line in
             Task { @MainActor in
@@ -166,7 +166,7 @@ final class AppModel: ObservableObject, UserInteraction {
         }
     }
 
-    private func finishProcessing(_ outcomes: [ProcessingOutcome], settings newSettings: Settings) {
+    private func finishProcessing(_ outcomes: [ProcessingOutcome], settings newSettings: PDFilterSettings) {
         isProcessing = false
         progressText = ""
         if newSettings != settings { settings = newSettings }

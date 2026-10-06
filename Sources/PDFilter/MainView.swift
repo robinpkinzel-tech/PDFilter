@@ -32,14 +32,14 @@ struct MainView: View {
         }
     }
 
+    private var rootPath: String { model.settings.rootFolder.path }
+    private var targetPattern: String { "Aktenordner / \(model.settings.pathTemplate) / \(model.settings.gesamtakteFileName)" }
+
     private var header: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
-                Label(model.settings.rootFolder.path, systemImage: "folder")
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                Label("Aktenordner / \(model.settings.pathTemplate) / \(model.settings.gesamtakteFileName)", systemImage: "arrow.turn.down.right")
-                    .lineLimit(1)
+                Label { Text(rootPath).lineLimit(1).truncationMode(.middle) } icon: { Image(systemName: "folder") }
+                Label { Text(targetPattern).lineLimit(1) } icon: { Image(systemName: "arrow.turn.down.right") }
                     .foregroundStyle(.secondary)
             }
             .font(.callout)

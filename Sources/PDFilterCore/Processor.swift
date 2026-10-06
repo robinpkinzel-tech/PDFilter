@@ -36,7 +36,7 @@ final class LoadedDocument {
 
 /// Steuert den gesamten Ablauf: Laden → Aktenzeichen → Akte finden → Plan → Bestätigung → Ausführung.
 public final class Processor {
-    public private(set) var settings: Settings
+    public private(set) var settings: PDFilterSettings
     let interaction: UserInteraction
     let logger: PDFilterLogger
     let ocr: OCRService
@@ -47,7 +47,7 @@ public final class Processor {
     let locator: AkteLocator
     private var cancelled = false
 
-    public init(settings: Settings, interaction: UserInteraction, logger: PDFilterLogger = .shared,
+    public init(settings: PDFilterSettings, interaction: UserInteraction, logger: PDFilterLogger = .shared,
                 cache: PageDateCache? = PageDateCache(), backups: BackupManager = BackupManager()) {
         self.settings = settings
         self.interaction = interaction
