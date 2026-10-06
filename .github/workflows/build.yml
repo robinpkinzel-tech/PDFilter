@@ -1,0 +1,43 @@
+name: Build & Test (macOS)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build, Test, App-Bundle
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain anzeigen
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Bauen (Debug)
+        run: swift build -v 2>&1 | tail -n 200
+
+      - name: Tests
+        run: swift test 2>&1 | tail -n 400
+
+      - name: App-Bundle erzeugen (Release)
+        run: Scripts/make-app.sh
+
+      - name: App zippen
+        run: |
+          cd build
+          ditto -c -k --keepParent PDFilter.app PDFilter.app.zip
+          ls -la
+
+      - name: App als Artefakt hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFilter-macOS
+          path: build/PDFilter.app.zip
+          if-no-files-found: error
+          retention-days: 30
