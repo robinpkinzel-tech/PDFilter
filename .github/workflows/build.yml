@@ -28,6 +28,15 @@ jobs:
       - name: Tests
         run: swift test 2>&1 | tail -n 800
 
+      - name: Absturzberichte auswerten (nur bei Fehler)
+        if: failure()
+        run: |
+          ls -t ~/Library/Logs/DiagnosticReports/ 2>/dev/null | head -n 20 || true
+          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -n 2); do
+            echo "=== $f"
+            python3 Scripts/crashreport.py "$f" || head -c 6000 "$f"
+          done
+
       - name: App-Bundle erzeugen (Release)
         run: Scripts/make-app.sh
 

@@ -85,8 +85,8 @@ public enum TextDateFinder {
                     context = String(prev.suffix(30)) + " " + context
                 }
                 let after = line.text.utf16Substring(from: m.end, to: m.end + 10)
-                let score = score(context: context, after: after, isTop: line.isTop, date: date, today: today)
-                out.append(DateCandidate(date: date, score: score, matchedText: m.text,
+                let rating = Self.score(context: context, after: after, isTop: line.isTop, date: date, today: today)
+                out.append(DateCandidate(date: date, score: rating, matchedText: m.text,
                                          context: context.trimmingCharacters(in: .whitespacesAndNewlines),
                                          isTop: line.isTop))
             }
