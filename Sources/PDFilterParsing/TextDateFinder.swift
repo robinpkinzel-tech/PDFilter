@@ -147,11 +147,12 @@ public enum TextDateFinder {
         }
         aggregated.sort { a, b in a.score != b.score ? a.score > b.score : a.date > b.date }
         let top = aggregated[0]
-        let second = aggregated.count > 1 ? aggregated[1].score : Int.min
+        // Abstand zum zweitbesten Kandidaten; bei nur einem Kandidaten gilt der Abstand als groß.
+        let margin = aggregated.count > 1 ? top.score - aggregated[1].score : 1000
         let confidence: Confidence
-        if top.score >= 5 && top.score - second >= 2 {
+        if top.score >= 5 && margin >= 2 {
             confidence = .high
-        } else if top.score >= 3 && top.score - second >= 1 {
+        } else if top.score >= 3 && margin >= 1 {
             confidence = .medium
         } else {
             confidence = .low

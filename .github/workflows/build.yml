@@ -28,20 +28,6 @@ jobs:
       - name: Tests
         run: swift test 2>&1 | tail -n 800
 
-      - name: Absturz-Diagnose (nur bei Fehler)
-        if: failure()
-        run: |
-          sleep 8
-          ls -t ~/Library/Logs/DiagnosticReports/ /Library/Logs/DiagnosticReports/ 2>/dev/null | head -n 30 || true
-          for f in $(ls -t ~/Library/Logs/DiagnosticReports/*.ips /Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -n 2); do
-            echo "=== $f"
-            python3 Scripts/crashreport.py "$f" || head -c 6000 "$f"
-          done
-          XCTEST="$(xcode-select -p)/usr/bin/xctest"
-          BUNDLE=$(ls -d .build/*/debug/PDFilterPackageTests.xctest | head -n 1)
-          echo "=== lldb: $BUNDLE"
-          lldb --batch -o run -o "bt 60" -o "thread list" -o quit -- "$XCTEST" -XCTest 'PDFilterParsingTests.DateTests/testIsoAndDotSpacing' "$BUNDLE" 2>&1 | tail -n 150 || true
-
       - name: App-Bundle erzeugen (Release)
         run: Scripts/make-app.sh
 
