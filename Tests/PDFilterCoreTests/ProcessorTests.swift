@@ -125,12 +125,12 @@ final class ProcessorTests: XCTestCase {
         let i = ScriptedInteraction()
         let out = await makeProcessor(i).process(files: [f])
         XCTAssertEqual(out.first?.success, false)
-        XCTAssertTrue((out.first?.details.first ?? \"\").contains("Keine Akte"), out.first?.details.first ?? \"\")
+        XCTAssertTrue((out.first?.details.first ?? "").contains("Keine Akte"), out.first?.details.first ?? "")
 
         try FileManager.default.createDirectory(at: root.appendingPathComponent("99:26 - Fremd/01_Akte"), withIntermediateDirectories: true)
         let out2 = await makeProcessor(ScriptedInteraction()).process(files: [f])
         XCTAssertEqual(out2.first?.success, false)
-        XCTAssertTrue((out2.first?.details.first ?? \"\").contains("01_Gesamtakte"), out2.first?.details.first ?? \"\")
+        XCTAssertTrue((out2.first?.details.first ?? "").contains("01_Gesamtakte"), out2.first?.details.first ?? "")
         XCTAssertTrue(FileManager.default.fileExists(atPath: f.path))
     }
 
@@ -142,7 +142,7 @@ final class ProcessorTests: XCTestCase {
         let out = await makeProcessor(i).process(files: [f])
         XCTAssertEqual(out.count, 1)
         XCTAssertEqual(out.first?.success, false)
-        XCTAssertTrue((out.first?.title ?? \"\").contains("übersprungen"))
+        XCTAssertTrue((out.first?.title ?? "").contains("übersprungen"))
 
         let i2 = ScriptedInteraction()
         i2.aktenzeichenAnswer = .cancelAll
