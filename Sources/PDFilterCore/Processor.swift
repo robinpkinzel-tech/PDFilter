@@ -349,9 +349,9 @@ public final class Processor {
             throw PDFilterError.cannotOpenPDF(gesamtakte)
         }
         await interaction.progress("Akte \(az.display): Gesamtakte »\(gesamtakte.lastPathComponent)« wird analysiert (\(existingDoc.pageCount) Seiten) …")
-        let interaction = self.interaction
+        let ui = self.interaction
         let pageInfo = indexer.pageDates(of: existingDoc, at: gesamtakte, maxOCRPages: settings.maxOCRPagesForSorting) { message in
-            Task { @MainActor in interaction.progress(message) }
+            Task { @MainActor in ui.progress(message) }
         }
         var warnings: [String] = []
         if !pageInfo.complete {

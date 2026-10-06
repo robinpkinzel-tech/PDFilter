@@ -55,10 +55,12 @@ final class AppModel: ObservableObject, UserInteraction {
     init() {
         settings = Settings.load()
         logLines = PDFilterLogger.shared.recentLines(max: 200)
-        PDFilterLogger.shared.addHandler { [weak self] line in
-            guard let self else { return }
-            self.logLines.append(line)
-            if self.logLines.count > 2000 { self.logLines.removeFirst(self.logLines.count - 2000) }
+        PDFilterLogger.shared.addHandler { line in
+            Task { @MainActor in
+                let model = AppModel.shared
+                model.logLines.append(line)
+                if model.logLines.count > 2000 { model.logLines.removeFirst(model.logLines.count - 2000) }
+            }
         }
     }
 
