@@ -71,6 +71,27 @@ Eingang (Drag&Drop / "Öffnen mit")
 - Jeder Lauf wird protokolliert (Protokollansicht in der App).
 - Kein Löschen ohne Papierkorb.
 
-## 4. Offene Fragen
+## 4. Entscheidungen (Antworten vom 06.10.2026)
 
-Siehe Chat; werden nach Rückmeldung hier mit Antworten eingetragen.
+| Nr. | Frage | Entscheidung |
+|---|---|---|
+| 1 | Mac | MacBook Pro M5 Pro, macOS 26.5.2 → Mindestversion macOS 15 |
+| 2 | Xcode | vorhanden; zusätzlich fertige App aus GitHub Actions |
+| 3 | Schreibweise AZ in Ordnernamen | Finder zeigt kein »/«; App erkennt `/`, `:`, `-`, `_`, `.`, Leerzeichen gleichwertig |
+| 4 | Lage der Akten | direkt auf dem Schreibtisch; Archiv-Unterordner optional (Einstellung) |
+| 5 | AZ-Vorschlag aus Dokumenttext | ja, nur als Vorschlag |
+| 6 | Format | Nummer nur Ziffern, Jahr zweistellig (vierstellig wird toleriert) |
+| 7 | Name der Gesamtakte | kein festes Muster; bei genau einer PDF → diese ist die Gesamtakte, wird in »Gesamtakte.pdf« umbenannt |
+| 8 | Anhängen | nach Datum einsortieren; unklar → ans Ende |
+| 9 | Einzeldateien nach Zusammenführung | in Unterordner »Einzeldokumente« verschieben |
+| 10 | Leerer Zielordner | neue Gesamtakte anlegen |
+| 11 | Nummernschema | selten; alles wird zu einer Datei zusammengeführt |
+| 12 | Datumsformate in Dateinamen | gemischt: `2024-12-01`, `01.12.2024`, `241201` |
+| 13 | Nummer vs. Datum | Nummer hat Vorrang, Widerspruch wird angezeigt |
+| 14 | Vorschau | ja, mit »für diese Akte nicht mehr fragen«; unsicheres Datum → Seitenvorschau + Eingabe |
+| 15 | Ausweichordner | im Zielordner: `_PDFilter_Entwurf` |
+| 16 | Originaldatei | Papierkorb |
+| 17 | Sicherungen | ja, rollierend ca. 5 je Akte |
+| 18 | Eingang | Drag & Drop, »Öffnen mit«, Dock |
+| 19 | Bilder | ja, inkl. HEIC (iPhone) |
+| 20 | Durchsuchbar machen | ja |
